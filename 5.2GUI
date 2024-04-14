@@ -1,0 +1,51 @@
+from tkinter import *
+import RPi.GPIO as GPIO
+root=Tk()
+root.geometry('300x300')
+root.title('LED Intensity Control')
+
+# Initialize the GPIO
+GPIO.setmode(GPIO.BCM)
+red_LED = 18
+green_LED= 23
+yellow_LED=24
+
+GPIO.setup(red_LED, GPIO.OUT)  # Set red LED pin as an output
+GPIO.setup(green_LED, GPIO.OUT) # Set green LED pin as an output
+GPIO.setup(yellow_LED, GPIO.OUT) # Set yellow LED pin as an output
+
+
+red_pwm = GPIO.PWM(red_LED, 100)      # Initialize PWM for red LED with 100 Hz frequency
+green_pwm = GPIO.PWM(green_LED, 100)  # Initialize PWM for green LED with 100 Hz frequency
+yellow_pwm = GPIO.PWM(yellow_LED, 100)  # Initialize PWM for yellow LED with 100 Hz frequency
+
+def red(value):
+    duty_cycle = float(value) / 100.0 * 100.0  # Calculate duty cycle based on slider value (0-100)
+    red_pwm.ChangeDutyCycle(duty_cycle)       # Change PWM duty cycle for red LED
+
+def green(value):
+    duty_cycle = float(value) / 100.0 * 100.0  # Calculate duty cycle based on slider value (0-100)
+    green_pwm.ChangeDutyCycle(duty_cycle)     # Change PWM duty cycle for green LED
+
+def yellow(value):
+    duty_cycle = float(value) / 100.0 * 100.0  # Calculate duty cycle based on slider value (0-100)
+    yellow_pwm.ChangeDutyCycle(duty_cycle)    # Change PWM duty cycle for yellow LED
+
+
+# Create sliders for controlling LED intensity
+red_slider=Scale(root, from_=0, to=100, command=red, orient=HORIZONTAL).grid(row=1,column=1)
+red_label=Label(root, text='RED').grid(row=1,column=0)
+
+green_slider=Scale(root, from_=0, to=100, command=green, orient=HORIZONTAL).grid(row=2,column=1)
+green_label=Label(root, text='GREEN').grid(row=2,column=0)
+
+yellow_slider=Scale(root, from_=0, to=100, command=yellow, orient=HORIZONTAL).grid(row=3,column=1)
+red_label=Label(root, text='YELLOW').grid(row=3,column=0)
+
+# Start PWM for all LEDs at 0% duty cycle initially
+red_pwm.start(0)
+green_pwm.start(0)
+yellow_pwm.start(0)
+
+
+root.mainloop()
